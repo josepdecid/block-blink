@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= siteName %></title>
+    <title>Block Blink</title>
     <meta name="description" content="<%= siteDescription %>" />
     <meta name="author" content="josepdecid" />
     <meta name="robots" content="index, follow" />
@@ -52,41 +52,60 @@
         </header>
 
         <div class="top-buttons">
-          <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Mute sound">
-            <img alt="" width="20" height="20">
+          <button
+            class="sound-toggle"
+            id="sound-toggle"
+            type="button"
+            aria-label="Mute sound"
+          >
+            <img alt="" width="20" height="20" />
           </button>
-          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
-            <img alt="" width="20" height="20">
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            type="button"
+            aria-label="Toggle theme"
+          >
+            <img alt="" width="20" height="20" />
           </button>
         </div>
 
         <section class="play-area">
-          <div class="hero-count" id="hero-count">?</div>
-          <canvas class="game-canvas" id="game-canvas" aria-label="Block counting game"></canvas>
+          <div class="hero-count" id="hero-count"></div>
+          <canvas
+            class="game-canvas"
+            id="game-canvas"
+            aria-label="Block counting game"
+          ></canvas>
         </section>
 
-        <aside class="results-panel" id="results-panel">
-          <p class="results-label">Round</p>
-          <p class="results-value" id="round-value">1</p>
-
-          <p class="results-label">Your Guess</p>
-          <div class="guess-result">
-            <span class="guess-number" id="guess-number">0</span>
-            <span class="guess-mark" id="guess-mark"></span>
+        <aside id="results-panel" class="results-panel">
+          <div class="results-content">
+            <p class="results-label">Your Guess</p>
+            <div class="guess-result">
+              <span class="guess-number" id="guess-number">0</span>
+              <span class="guess-mark" id="guess-mark"></span>
+            </div>
           </div>
 
-          <p class="results-label">Actual</p>
-          <p class="results-value" id="actual-value">-</p>
+          <div class="controls">
+            <button
+              id="increment-button"
+              class="control-button"
+              type="button"
+              aria-label="Add block"
+            >
+              &#x002B;
+            </button>
+            <button
+              id="submit-button"
+              class="control-button control-button--primary"
+              type="button"
+            >
+              &#x2713;
+            </button>
+          </div>
         </aside>
-
-        <div class="control-bar" aria-label="Game controls">
-          <button class="control-button control-button--primary" id="increment-button" type="button">
-            Add Block
-          </button>
-          <button class="control-button" id="submit-button" type="button">
-            Check Now
-          </button>
-        </div>
       </main>
     </div>
   </body>

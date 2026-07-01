@@ -1,0 +1,111 @@
+.results-panel {
+  position: relative;
+  justify-self: end;
+  margin: 0 clamp(0.8rem, 2vw, 1.8rem) clamp(0.8rem, 2vw, 1.8rem);
+}
+
+.results-content {
+  text-align: right;
+  margin-bottom: 0.7rem;
+}
+
+.results-label {
+  margin: 0;
+  color: rgba(17, 24, 39, 0.58);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.guess-result {
+  position: relative;
+  display: inline-block;
+}
+
+.guess-number {
+  display: inline-block;
+  font-size: 3rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.guess-mark {
+  position: absolute;
+  top: 0.08rem;
+  left: 55%;
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 1;
+  transform: rotate(-10deg);
+}
+
+#results-panel[data-result="correct"] .guess-mark {
+  color: #25c544;
+}
+
+#results-panel[data-result="incorrect"] .guess-mark {
+  color: #db2c3b;
+}
+
+.control-bar {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(0.8rem, 2vw, 1.5rem);
+  z-index: 2;
+  display: flex;
+  gap: 0.8rem;
+  transform: translateX(-50%);
+}
+
+.control-button {
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #1f2937;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.95rem 1.3rem;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(14px);
+  touch-action: manipulation;
+}
+
+.control-button--primary {
+  background: linear-gradient(180deg, #37e65b 0%, #24bf44 100%);
+  color: #06210d;
+}
+
+.control-button:disabled {
+  opacity: 0.45;
+}
+
+.dark .results-label {
+  color: rgba(226, 232, 240, 0.5);
+}
+
+.dark .control-button {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(148, 163, 184, 0.2);
+  color: #e2e8f0;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);
+}
+
+.dark .control-button--primary {
+  background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+  color: #052e14;
+}
+
+@media (max-width: 640px) {
+  #results-panel {
+    justify-self: stretch;
+    min-width: 0;
+    margin: 0 0.8rem 0.8rem;
+  }
+
+  .control-button {
+    flex: 1;
+  }
+}

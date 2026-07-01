@@ -1,4 +1,5 @@
-import './index.css';
+import './styles/index.css';
+import './styles/results.css';
 import { iconSrc } from './icons.js';
 
 const config = {
@@ -13,11 +14,9 @@ const config = {
 const canvas = document.querySelector('#game-canvas');
 const context = canvas.getContext('2d');
 const heroCount = document.querySelector('#hero-count');
-const roundValue = document.querySelector('#round-value');
 
 const guessNumber = document.querySelector('#guess-number');
 const guessMark = document.querySelector('#guess-mark');
-const actualValue = document.querySelector('#actual-value');
 const resultsPanel = document.querySelector('#results-panel');
 const incrementButton = document.querySelector('#increment-button');
 const submitButton = document.querySelector('#submit-button');
@@ -441,13 +440,8 @@ function getHeroValue(now) {
 function updateHud() {
   const now = performance.now();
   const guessing = state.phase === 'guessing';
-  roundValue.textContent = String(state.round || 1);
   heroCount.textContent = getHeroValue(now);
   guessNumber.textContent = String(state.submittedGuess ?? state.guess);
-  actualValue.textContent =
-    state.phase === 'showing' || state.phase === 'guessing'
-      ? '-'
-      : String(state.blocks.length);
 
   resultsPanel.dataset.result = state.result ?? '';
   incrementButton.disabled = !guessing;
