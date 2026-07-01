@@ -1,6 +1,8 @@
 import './index.css';
 import moonIconUrl from './icons/moon.svg';
 import sunIconUrl from './icons/sun.svg';
+import volumeIconUrl from './icons/volume.svg';
+import mutedIconUrl from './icons/muted.svg';
 
 const config = {
   gridSize: 5,
@@ -19,9 +21,14 @@ document.querySelector('#root').innerHTML = `
       <p class="phase-copy" id="phase-copy">Memorize the pattern.</p>
     </header>
 
-    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
-      <img src="${moonIconUrl}" alt="" width="20" height="20">
-    </button>
+    <div class="top-buttons">
+      <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Mute sound">
+        <img src="${volumeIconUrl}" alt="" width="20" height="20">
+      </button>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
+        <img src="${moonIconUrl}" alt="" width="20" height="20">
+      </button>
+    </div>
 
     <section class="play-area">
       <div class="hero-count" id="hero-count">?</div>
@@ -83,6 +90,7 @@ const state = {
 const timers = new Set();
 let animationFrameId = 0;
 let audioContext = null;
+let isMuted = false;
 let lastPulseAt = 0;
 
 function schedule(callback, delay) {
@@ -209,6 +217,7 @@ function ensureAudioContext() {
 }
 
 function playBeep() {
+  if (isMuted) return;
   ensureAudioContext();
 
   const now = audioContext.currentTime;
@@ -265,7 +274,7 @@ function drawGrid(originX, originY, tileWidth, tileHeight) {
   context.lineWidth = 1;
   context.strokeStyle = isDarkTheme()
     ? 'rgba(148, 163, 184, 0.25)'
-    : 'rgba(69, 97, 134, 0.32)';
+    : 'rgba(0, 0, 0, 0.12)';
 
   for (let index = 0; index <= config.gridSize; index += 1) {
     const lineStartA = projectPoint(
@@ -671,6 +680,24 @@ function initTheme() {
   setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches);
 }
 
+function setMuted(muted) {
+  isMuted = muted;
+  const btn = document.querySelector('#sound-toggle');
+  if (btn) {
+    const img = btn.querySelector('img');
+    if (img) {
+      img.src = muted ? mutedIconUrl : volumeIconUrl;
+    }
+    btn.setAttribute('aria-label', muted ? 'Unmute sound' : 'Mute sound');
+  }
+  localStorage.setItem('sound', muted ? 'off' : 'on');
+}
+
+function initMute() {
+  const stored = localStorage.getItem('sound');
+  setMuted(stored === 'off');
+}
+
 window.addEventListener('resize', resizeCanvas);
 window.addEventListener('keydown', handleKeyDown);
 incrementButton.addEventListener('click', () =>
@@ -681,7 +708,12 @@ document.querySelector('#theme-toggle').addEventListener('click', () => {
   setTheme(!isDarkTheme());
 });
 
+document.querySelector('#sound-toggle').addEventListener('click', () => {
+  setMuted(!isMuted);
+});
+
 initTheme();
+initMute();
 resizeCanvas();
 startRound();
 animationFrameId = window.requestAnimationFrame(render);

@@ -3,7 +3,7 @@
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.45), transparent 38%),
-    linear-gradient(180deg, #bfd9ff 0%, #dcebff 100%);
+    linear-gradient(180deg, #e5e7eb 0%, #f9fafb 100%);
 }
 
 * {
@@ -80,10 +80,10 @@ body {
   z-index: 1;
   min-width: min(15rem, calc(100vw - 1.6rem));
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(84, 110, 146, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 1.2rem;
   background: rgba(255, 255, 255, 0.48);
-  box-shadow: 0 18px 44px rgba(76, 98, 132, 0.14);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(18px);
 }
 
@@ -150,15 +150,15 @@ body {
 
 .control-button {
   appearance: none;
-  border: 1px solid rgba(71, 95, 129, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.76);
-  color: #142234;
+  color: #1f2937;
   font: inherit;
   font-size: 1rem;
   font-weight: 700;
   padding: 0.95rem 1.3rem;
-  box-shadow: 0 14px 28px rgba(76, 98, 132, 0.12);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(14px);
   touch-action: manipulation;
 }
@@ -172,11 +172,18 @@ body {
   opacity: 0.45;
 }
 
-.theme-toggle {
+.top-buttons {
   position: fixed;
-  top: clamp(1.2rem, 4vw, 2.8rem);
-  right: clamp(1.2rem, 4vw, 2.8rem);
+  top: clamp(1.5rem, 5vw, 3.5rem);
+  right: clamp(1.5rem, 5vw, 3.5rem);
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.theme-toggle,
+.sound-toggle {
   display: grid;
   place-items: center;
   width: 2.4rem;
@@ -184,7 +191,7 @@ body {
   border: none;
   border-radius: 999px;
   background: transparent;
-  color: #142234;
+  color: #1f2937;
   cursor: pointer;
   touch-action: manipulation;
   transition:
@@ -192,7 +199,8 @@ body {
     color 0.2s;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.sound-toggle:hover {
   background: rgba(0, 0, 0, 0.06);
 }
 
@@ -231,12 +239,14 @@ body {
   color: #052e14;
 }
 
-.dark .theme-toggle {
+.dark .theme-toggle,
+.dark .sound-toggle {
   background: transparent;
   color: #fff;
 }
 
-.dark .theme-toggle:hover {
+.dark .theme-toggle:hover,
+.dark .sound-toggle:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
