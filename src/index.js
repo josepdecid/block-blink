@@ -17,8 +17,7 @@ const config = {
 document.querySelector('#root').innerHTML = `
   <main class="game-shell">
     <header class="top-copy">
-      <p class="prompt">How many blocks were there?</p>
-      <p class="phase-copy" id="phase-copy">Memorize the pattern.</p>
+      <p class="prompt">Count the Blocks before they Blink.</p>
     </header>
 
     <div class="top-buttons">
@@ -65,7 +64,6 @@ document.querySelector('#root').innerHTML = `
 
 const canvas = document.querySelector('#game-canvas');
 const context = canvas.getContext('2d');
-const phaseCopy = document.querySelector('#phase-copy');
 const heroCount = document.querySelector('#hero-count');
 const roundValue = document.querySelector('#round-value');
 const timerValue = document.querySelector('#timer-value');
@@ -530,21 +528,7 @@ function updateHud() {
   incrementButton.disabled = !guessing;
   submitButton.disabled = !guessing;
 
-  if (state.phase === 'showing') {
-    phaseCopy.textContent = 'Memorize the pattern.';
-  } else if (state.phase === 'guessing') {
-    phaseCopy.textContent =
-      'Press Space or tap Add Block. Press Enter or Check Now when ready.';
-  } else if (state.phase === 'revealing') {
-    phaseCopy.textContent = 'Counting the blocks back out loud.';
-  } else {
-    phaseCopy.textContent =
-      state.result === 'correct'
-        ? 'Exact match.'
-        : 'Not quite. Watch the count.';
-  }
-
-  if (state.result === 'correct') {
+if (state.result === 'correct') {
     guessMark.textContent = '✓';
   } else if (state.result === 'incorrect') {
     guessMark.textContent = '✕';
