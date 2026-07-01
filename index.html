@@ -45,6 +45,52 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main class="game-shell">
+        <header class="top-copy">
+          <p class="prompt">Count the Blocks before they Blink.</p>
+        </header>
+
+        <div class="top-buttons">
+          <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Mute sound">
+            <img src="/icons/volume.svg" alt="" width="20" height="20">
+          </button>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
+            <img src="/icons/moon.svg" alt="" width="20" height="20">
+          </button>
+        </div>
+
+        <section class="play-area">
+          <div class="hero-count" id="hero-count">?</div>
+          <canvas class="game-canvas" id="game-canvas" aria-label="Block counting game"></canvas>
+        </section>
+
+        <aside class="results-panel" id="results-panel">
+          <p class="results-label">Round</p>
+          <p class="results-value" id="round-value">1</p>
+
+          <p class="results-label">Timer</p>
+          <p class="results-value timer-value" id="timer-value">0.0s</p>
+
+          <p class="results-label">Your Guess</p>
+          <div class="guess-result">
+            <span class="guess-number" id="guess-number">0</span>
+            <span class="guess-mark" id="guess-mark"></span>
+          </div>
+
+          <p class="results-label">Actual</p>
+          <p class="results-value" id="actual-value">-</p>
+        </aside>
+
+        <div class="control-bar" aria-label="Game controls">
+          <button class="control-button control-button--primary" id="increment-button" type="button">
+            Add Block
+          </button>
+          <button class="control-button" id="submit-button" type="button">
+            Check Now
+          </button>
+        </div>
+      </main>
+    </div>
   </body>
 </html>

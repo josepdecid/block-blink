@@ -1,8 +1,4 @@
 import './index.css';
-import moonIconUrl from './icons/moon.svg';
-import sunIconUrl from './icons/sun.svg';
-import volumeIconUrl from './icons/volume.svg';
-import mutedIconUrl from './icons/muted.svg';
 
 const config = {
   gridSize: 5,
@@ -13,54 +9,6 @@ const config = {
   minBlocks: 2,
   maxBlocks: 7,
 };
-
-document.querySelector('#root').innerHTML = `
-  <main class="game-shell">
-    <header class="top-copy">
-      <p class="prompt">Count the Blocks before they Blink.</p>
-    </header>
-
-    <div class="top-buttons">
-      <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Mute sound">
-        <img src="${volumeIconUrl}" alt="" width="20" height="20">
-      </button>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
-        <img src="${moonIconUrl}" alt="" width="20" height="20">
-      </button>
-    </div>
-
-    <section class="play-area">
-      <div class="hero-count" id="hero-count">?</div>
-      <canvas class="game-canvas" id="game-canvas" aria-label="Block counting game"></canvas>
-    </section>
-
-    <aside class="results-panel" id="results-panel">
-      <p class="results-label">Round</p>
-      <p class="results-value" id="round-value">1</p>
-
-      <p class="results-label">Timer</p>
-      <p class="results-value timer-value" id="timer-value">0.0s</p>
-
-      <p class="results-label">Your Guess</p>
-      <div class="guess-result">
-        <span class="guess-number" id="guess-number">0</span>
-        <span class="guess-mark" id="guess-mark"></span>
-      </div>
-
-      <p class="results-label">Actual</p>
-      <p class="results-value" id="actual-value">-</p>
-    </aside>
-
-    <div class="control-bar" aria-label="Game controls">
-      <button class="control-button control-button--primary" id="increment-button" type="button">
-        Add Block
-      </button>
-      <button class="control-button" id="submit-button" type="button">
-        Check Now
-      </button>
-    </div>
-  </main>
-`;
 
 const canvas = document.querySelector('#game-canvas');
 const context = canvas.getContext('2d');
@@ -528,7 +476,7 @@ function updateHud() {
   incrementButton.disabled = !guessing;
   submitButton.disabled = !guessing;
 
-if (state.result === 'correct') {
+  if (state.result === 'correct') {
     guessMark.textContent = '✓';
   } else if (state.result === 'incorrect') {
     guessMark.textContent = '✕';
@@ -645,7 +593,7 @@ function setTheme(dark) {
   if (btn) {
     const img = btn.querySelector('img');
     if (img) {
-      img.src = dark ? sunIconUrl : moonIconUrl;
+      img.src = dark ? '/icons/sun.svg' : '/icons/moon.svg';
     }
     btn.setAttribute(
       'aria-label',
@@ -670,7 +618,7 @@ function setMuted(muted) {
   if (btn) {
     const img = btn.querySelector('img');
     if (img) {
-      img.src = muted ? mutedIconUrl : volumeIconUrl;
+      img.src = muted ? '/icons/muted.svg' : '/icons/volume.svg';
     }
     btn.setAttribute('aria-label', muted ? 'Unmute sound' : 'Mute sound');
   }
