@@ -204,12 +204,16 @@ function drawPath(points) {
   context.closePath();
 }
 
-function fillPolygon(points, fillStyle, strokeStyle) {
-  drawPath(points);
-  context.fillStyle = fillStyle;
-  context.fill();
+function strokeSegment(start, end, strokeStyle) {
+  context.beginPath();
+  context.moveTo(start.x, start.y);
+  context.lineTo(end.x, end.y);
   context.strokeStyle = strokeStyle;
   context.stroke();
+}
+
+function pulseLightness(base, pulseAmount) {
+  return Math.round(base + pulseAmount * 8);
 }
 
 function drawGrid(originX, originY, tileWidth, tileHeight) {
@@ -326,16 +330,6 @@ function drawCube(
     1,
   );
 
-  const groundNorth = projectPoint(
-    originX,
-    originY,
-    tileWidth,
-    tileHeight,
-    cubeHeight,
-    block.x,
-    block.y,
-    0,
-  );
   const groundEast = projectPoint(
     originX,
     originY,
@@ -370,52 +364,53 @@ function drawCube(
   const palette = isDarkTheme()
     ? highlighted
       ? {
-          top: `rgba(134, 239, 172, ${0.86 + pulseAmount * 0.1})`,
-          left: `rgba(74, 222, 128, ${0.88 + pulseAmount * 0.08})`,
-          right: `rgba(34, 197, 94, ${0.9 + pulseAmount * 0.06})`,
+          top: `hsl(138 79% ${pulseLightness(73, pulseAmount)}%)`,
+          left: `hsl(137 69% ${pulseLightness(58, pulseAmount)}%)`,
+          right: `hsl(142 72% ${pulseLightness(45, pulseAmount)}%)`,
           stroke: '#22c55e',
         }
       : {
-          top: '#4ade80',
-          left: '#22c55e',
-          right: '#16a34a',
-          stroke: '#15803d',
+          top: '#f8fafc',
+          left: '#e2e8f0',
+          right: '#cbd5e1',
+          stroke: '#94a3b8',
         }
     : highlighted
       ? {
-          top: `rgba(122, 255, 120, ${0.86 + pulseAmount * 0.1})`,
-          left: `rgba(63, 214, 74, ${0.88 + pulseAmount * 0.08})`,
-          right: `rgba(42, 183, 54, ${0.9 + pulseAmount * 0.06})`,
+          top: `hsl(120 100% ${pulseLightness(74, pulseAmount)}%)`,
+          left: `hsl(124 66% ${pulseLightness(54, pulseAmount)}%)`,
+          right: `hsl(125 63% ${pulseLightness(44, pulseAmount)}%)`,
           stroke: '#18882c',
         }
       : {
-          top: '#57e46a',
-          left: '#2ec741',
-          right: '#20b134',
-          stroke: '#208030',
+          top: '#ffffff',
+          left: '#f3f4f6',
+          right: '#e5e7eb',
+          stroke: '#9ca3af',
         };
 
-  fillPolygon(
-    [topNorth, topEast, topSouth, topWest],
-    palette.top,
-    palette.stroke,
-  );
-  fillPolygon(
-    [topWest, topSouth, groundSouth, groundWest],
-    palette.left,
-    palette.stroke,
-  );
-  fillPolygon(
-    [topEast, topSouth, groundSouth, groundEast],
-    palette.right,
-    palette.stroke,
-  );
+  drawPath([topNorth, topEast, topSouth, topWest]);
+  context.fillStyle = palette.top;
+  context.fill();
 
-  context.beginPath();
-  context.moveTo(topNorth.x, topNorth.y);
-  context.lineTo(groundNorth.x, groundNorth.y);
-  context.strokeStyle = palette.stroke;
-  context.stroke();
+  drawPath([topWest, topSouth, groundSouth, groundWest]);
+  context.fillStyle = palette.left;
+  context.fill();
+
+  drawPath([topEast, topSouth, groundSouth, groundEast]);
+  context.fillStyle = palette.right;
+  context.fill();
+
+  strokeSegment(topNorth, topEast, palette.stroke);
+  strokeSegment(topEast, groundEast, palette.stroke);
+  strokeSegment(topEast, topSouth, palette.stroke);
+  strokeSegment(groundEast, groundSouth, palette.stroke);
+  strokeSegment(topSouth, groundSouth, palette.stroke);
+  strokeSegment(groundSouth, groundWest, palette.stroke);
+  strokeSegment(groundWest, topWest, palette.stroke);
+  strokeSegment(topWest, topNorth, palette.stroke);
+  strokeSegment(topWest, topSouth, palette.stroke);
+  strokeSegment(topEast, topSouth, palette.stroke);
 }
 
 function getVisibleBlocks() {
@@ -511,7 +506,8 @@ function drawScene(now) {
   for (let index = 0; index < visibleBlocks.length; index += 1) {
     const block = visibleBlocks[index];
     const highlighted =
-      state.phase === 'revealing' && index < state.revealIndex;
+      (state.phase === 'revealing' || state.phase === 'result') &&
+      index < state.revealIndex;
     drawCube(
       originX,
       originY,
