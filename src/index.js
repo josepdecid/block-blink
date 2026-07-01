@@ -1,13 +1,13 @@
 import './index.css';
 
 const config = {
-  gridSize: 5,
+  gridSize: 7,
   guessDurationMs: 10_000,
   showDurationMs: 2_600,
   revealStepMs: 550,
   resultDurationMs: 1_900,
   minBlocks: 2,
-  maxBlocks: 7,
+  maxBlocks: 10,
 };
 
 const canvas = document.querySelector('#game-canvas');
@@ -430,6 +430,10 @@ function getVisibleBlocks() {
 }
 
 function getHeroValue() {
+  if (state.phase === 'showing') {
+    return '';
+  }
+
   if (state.phase === 'guessing') {
     return String(state.guess);
   }
@@ -446,16 +450,12 @@ function getHeroValue() {
 }
 
 function getTimerLabel(now) {
-  if (state.phase === 'guessing') {
-    return `${Math.max(0, (state.phaseEndsAt - now) / 1000).toFixed(1)}s`;
-  }
-
-  if (state.phase === 'showing') {
-    return `${Math.max(0, (state.phaseEndsAt - now) / 1000).toFixed(1)}s`;
-  }
-
-  if (state.phase === 'result') {
-    return `${Math.max(0, (state.phaseEndsAt - now) / 1000).toFixed(1)}s`;
+  if (
+    state.phase === 'guessing' ||
+    state.phase === 'showing' ||
+    state.phase === 'result'
+  ) {
+    return `${Math.ceil(Math.max(0, state.phaseEndsAt - now) / 1000)}s`;
   }
 
   return `${state.revealIndex}/${state.blocks.length}`;
@@ -514,7 +514,7 @@ function resizeCanvas() {
 function drawScene(now) {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
-  const tileWidth = Math.min(width * 0.16, height * 0.24, 74);
+  const tileWidth = Math.min(width * 0.12, height * 0.17, 54);
   const tileHeight = tileWidth / 2;
   const cubeHeight = tileHeight * 1.15;
   const originX = width / 2;

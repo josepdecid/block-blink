@@ -1,6 +1,31 @@
+@font-face {
+  font-family: "Bungee";
+  src: url("./fonts/bungee-latin-ext.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bungee";
+  src: url("./fonts/bungee-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bungee Fallback";
+  src: local("Arial");
+  size-adjust: 88.75%;
+  ascent-override: 112.67%;
+  descent-override: 141.57%;
+  line-gap-override: 0%;
+}
+
 :root {
   color: #111827;
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Bungee", "Bungee Fallback", Arial, Helvetica, sans-serif;
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.45), transparent 38%),
     linear-gradient(180deg, #e5e7eb 0%, #f9fafb 100%);
@@ -103,8 +128,11 @@ body {
   line-height: 1.05;
 }
 
-.timer-value {
+.phase-copy.timer-value {
   font-variant-numeric: tabular-nums;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 700;
+  margin: 0.4rem 0 0;
 }
 
 .guess-result {
