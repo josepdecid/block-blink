@@ -1,4 +1,5 @@
 import './index.css';
+import { icons } from './icons.js';
 
 const config = {
   gridSize: 5,
@@ -575,7 +576,7 @@ function setTheme(dark) {
   if (btn) {
     const img = btn.querySelector('img');
     if (img) {
-      img.src = dark ? '/icons/sun.svg' : '/icons/moon.svg';
+      img.src = dark ? icons.sun : icons.moon;
     }
     btn.setAttribute(
       'aria-label',
@@ -600,7 +601,7 @@ function setMuted(muted) {
   if (btn) {
     const img = btn.querySelector('img');
     if (img) {
-      img.src = muted ? '/icons/muted.svg' : '/icons/volume.svg';
+      img.src = muted ? icons.muted : icons.volume;
     }
     btn.setAttribute('aria-label', muted ? 'Unmute sound' : 'Mute sound');
   }
