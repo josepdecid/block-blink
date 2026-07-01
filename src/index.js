@@ -1,7 +1,7 @@
 import './index.css';
 
 const config = {
-  gridSize: 7,
+  gridSize: 5,
   showDurationMs: 2_600,
   revealStepMs: 550,
   resultDurationMs: 1_900,
@@ -490,11 +490,16 @@ function resizeCanvas() {
 function drawScene(now) {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
-  const tileWidth = Math.min(width * 0.12, height * 0.17, 54);
+  const tileWidth = Math.min(
+    width / (config.gridSize + 2),
+    height / (config.gridSize + 2.5),
+    96,
+  );
   const tileHeight = tileWidth / 2;
   const cubeHeight = tileHeight * 1.15;
   const originX = width / 2;
-  const originY = height * 0.48;
+  const contentHeight = config.gridSize * tileHeight + cubeHeight;
+  const originY = (height - contentHeight) / 2 + cubeHeight;
 
   context.clearRect(0, 0, width, height);
   drawGrid(originX, originY, tileWidth, tileHeight);
