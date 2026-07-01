@@ -1,4 +1,6 @@
 import './index.css';
+import moonIconUrl from './icons/moon.svg';
+import sunIconUrl from './icons/sun.svg';
 
 const config = {
   gridSize: 5,
@@ -16,6 +18,10 @@ document.querySelector('#root').innerHTML = `
       <p class="prompt">How many blocks were there?</p>
       <p class="phase-copy" id="phase-copy">Memorize the pattern.</p>
     </header>
+
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
+      <img src="${moonIconUrl}" alt="" width="20" height="20">
+    </button>
 
     <section class="play-area">
       <div class="hero-count" id="hero-count">?</div>
@@ -124,7 +130,11 @@ function sampleUniqueCells(count) {
 
 function getBlockCountForRound(round) {
   const growth = Math.floor((round - 1) / 2);
-  const min = clamp(config.minBlocks + growth, config.minBlocks, config.maxBlocks - 1);
+  const min = clamp(
+    config.minBlocks + growth,
+    config.minBlocks,
+    config.maxBlocks - 1,
+  );
   const max = clamp(min + 2, min, config.maxBlocks);
 
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -181,7 +191,8 @@ function revealNextBlock() {
   }
 
   state.phase = 'result';
-  state.result = state.submittedGuess === state.blocks.length ? 'correct' : 'incorrect';
+  state.result =
+    state.submittedGuess === state.blocks.length ? 'correct' : 'incorrect';
   state.phaseEndsAt = performance.now() + config.resultDurationMs;
   updateHud();
   schedule(startRound, config.resultDurationMs);
@@ -216,7 +227,16 @@ function playBeep() {
   oscillator.stop(now + 0.18);
 }
 
-function projectPoint(originX, originY, tileWidth, tileHeight, cubeHeight, x, y, z = 0) {
+function projectPoint(
+  originX,
+  originY,
+  tileWidth,
+  tileHeight,
+  cubeHeight,
+  x,
+  y,
+  z = 0,
+) {
   return {
     x: originX + (x - y) * (tileWidth / 2),
     y: originY + (x + y) * (tileHeight / 2) - z * cubeHeight,
@@ -243,13 +263,51 @@ function fillPolygon(points, fillStyle, strokeStyle) {
 function drawGrid(originX, originY, tileWidth, tileHeight) {
   context.save();
   context.lineWidth = 1;
-  context.strokeStyle = 'rgba(69, 97, 134, 0.32)';
+  context.strokeStyle = isDarkTheme()
+    ? 'rgba(148, 163, 184, 0.25)'
+    : 'rgba(69, 97, 134, 0.32)';
 
   for (let index = 0; index <= config.gridSize; index += 1) {
-    const lineStartA = projectPoint(originX, originY, tileWidth, tileHeight, 0, index, 0, 0);
-    const lineEndA = projectPoint(originX, originY, tileWidth, tileHeight, 0, index, config.gridSize, 0);
-    const lineStartB = projectPoint(originX, originY, tileWidth, tileHeight, 0, 0, index, 0);
-    const lineEndB = projectPoint(originX, originY, tileWidth, tileHeight, 0, config.gridSize, index, 0);
+    const lineStartA = projectPoint(
+      originX,
+      originY,
+      tileWidth,
+      tileHeight,
+      0,
+      index,
+      0,
+      0,
+    );
+    const lineEndA = projectPoint(
+      originX,
+      originY,
+      tileWidth,
+      tileHeight,
+      0,
+      index,
+      config.gridSize,
+      0,
+    );
+    const lineStartB = projectPoint(
+      originX,
+      originY,
+      tileWidth,
+      tileHeight,
+      0,
+      0,
+      index,
+      0,
+    );
+    const lineEndB = projectPoint(
+      originX,
+      originY,
+      tileWidth,
+      tileHeight,
+      0,
+      config.gridSize,
+      index,
+      0,
+    );
 
     context.beginPath();
     context.moveTo(lineStartA.x, lineStartA.y);
@@ -265,34 +323,141 @@ function drawGrid(originX, originY, tileWidth, tileHeight) {
   context.restore();
 }
 
-function drawCube(originX, originY, tileWidth, tileHeight, cubeHeight, block, highlighted, pulseAmount) {
-  const topNorth = projectPoint(originX, originY, tileWidth, tileHeight, cubeHeight, block.x, block.y, 1);
-  const topEast = projectPoint(originX, originY, tileWidth, tileHeight, cubeHeight, block.x + 1, block.y, 1);
-  const topSouth = projectPoint(originX, originY, tileWidth, tileHeight, cubeHeight, block.x + 1, block.y + 1, 1);
-  const topWest = projectPoint(originX, originY, tileWidth, tileHeight, cubeHeight, block.x, block.y + 1, 1);
+function drawCube(
+  originX,
+  originY,
+  tileWidth,
+  tileHeight,
+  cubeHeight,
+  block,
+  highlighted,
+  pulseAmount,
+) {
+  const topNorth = projectPoint(
+    originX,
+    originY,
+    tileWidth,
+    tileHeight,
+    cubeHeight,
+    block.x,
+    block.y,
+    1,
+  );
+  const topEast = projectPoint(
+    originX,
+    originY,
+    tileWidth,
+    tileHeight,
+    cubeHeight,
+    block.x + 1,
+    block.y,
+    1,
+  );
+  const topSouth = projectPoint(
+    originX,
+    originY,
+    tileWidth,
+    tileHeight,
+    cubeHeight,
+    block.x + 1,
+    block.y + 1,
+    1,
+  );
+  const topWest = projectPoint(
+    originX,
+    originY,
+    tileWidth,
+    tileHeight,
+    cubeHeight,
+    block.x,
+    block.y + 1,
+    1,
+  );
 
-  const groundNorth = projectPoint(originX, originY, tileWidth, tileHeight, cubeHeight, block.x, block.y, 0);
-  const groundEast = projectPoint(originX, originY, tileWidth, tileHeight, cubeHeight, block.x + 1, block.y, 0);
-  const groundSouth = projectPoint(originX, originY, tileWidth, tileHeight, cubeHeight, block.x + 1, block.y + 1, 0);
-  const groundWest = projectPoint(originX, originY, tileWidth, tileHeight, cubeHeight, block.x, block.y + 1, 0);
+  const groundNorth = projectPoint(
+    originX,
+    originY,
+    tileWidth,
+    tileHeight,
+    cubeHeight,
+    block.x,
+    block.y,
+    0,
+  );
+  const groundEast = projectPoint(
+    originX,
+    originY,
+    tileWidth,
+    tileHeight,
+    cubeHeight,
+    block.x + 1,
+    block.y,
+    0,
+  );
+  const groundSouth = projectPoint(
+    originX,
+    originY,
+    tileWidth,
+    tileHeight,
+    cubeHeight,
+    block.x + 1,
+    block.y + 1,
+    0,
+  );
+  const groundWest = projectPoint(
+    originX,
+    originY,
+    tileWidth,
+    tileHeight,
+    cubeHeight,
+    block.x,
+    block.y + 1,
+    0,
+  );
 
-  const palette = highlighted
-    ? {
-        top: `rgba(122, 255, 120, ${0.86 + pulseAmount * 0.1})`,
-        left: `rgba(63, 214, 74, ${0.88 + pulseAmount * 0.08})`,
-        right: `rgba(42, 183, 54, ${0.9 + pulseAmount * 0.06})`,
-        stroke: '#18882c',
-      }
-    : {
-        top: '#57e46a',
-        left: '#2ec741',
-        right: '#20b134',
-        stroke: '#208030',
-      };
+  const palette = isDarkTheme()
+    ? highlighted
+      ? {
+          top: `rgba(134, 239, 172, ${0.86 + pulseAmount * 0.1})`,
+          left: `rgba(74, 222, 128, ${0.88 + pulseAmount * 0.08})`,
+          right: `rgba(34, 197, 94, ${0.9 + pulseAmount * 0.06})`,
+          stroke: '#22c55e',
+        }
+      : {
+          top: '#4ade80',
+          left: '#22c55e',
+          right: '#16a34a',
+          stroke: '#15803d',
+        }
+    : highlighted
+      ? {
+          top: `rgba(122, 255, 120, ${0.86 + pulseAmount * 0.1})`,
+          left: `rgba(63, 214, 74, ${0.88 + pulseAmount * 0.08})`,
+          right: `rgba(42, 183, 54, ${0.9 + pulseAmount * 0.06})`,
+          stroke: '#18882c',
+        }
+      : {
+          top: '#57e46a',
+          left: '#2ec741',
+          right: '#20b134',
+          stroke: '#208030',
+        };
 
-  fillPolygon([topNorth, topEast, topSouth, topWest], palette.top, palette.stroke);
-  fillPolygon([topWest, topSouth, groundSouth, groundWest], palette.left, palette.stroke);
-  fillPolygon([topEast, topSouth, groundSouth, groundEast], palette.right, palette.stroke);
+  fillPolygon(
+    [topNorth, topEast, topSouth, topWest],
+    palette.top,
+    palette.stroke,
+  );
+  fillPolygon(
+    [topWest, topSouth, groundSouth, groundWest],
+    palette.left,
+    palette.stroke,
+  );
+  fillPolygon(
+    [topEast, topSouth, groundSouth, groundEast],
+    palette.right,
+    palette.stroke,
+  );
 
   context.beginPath();
   context.moveTo(topNorth.x, topNorth.y);
@@ -347,7 +512,10 @@ function updateHud() {
   roundValue.textContent = String(state.round || 1);
   heroCount.textContent = getHeroValue();
   guessNumber.textContent = String(state.submittedGuess ?? state.guess);
-  actualValue.textContent = state.phase === 'showing' || state.phase === 'guessing' ? '-' : String(state.blocks.length);
+  actualValue.textContent =
+    state.phase === 'showing' || state.phase === 'guessing'
+      ? '-'
+      : String(state.blocks.length);
   timerValue.textContent = getTimerLabel(now);
   resultsPanel.dataset.result = state.result ?? '';
   incrementButton.disabled = !guessing;
@@ -356,11 +524,15 @@ function updateHud() {
   if (state.phase === 'showing') {
     phaseCopy.textContent = 'Memorize the pattern.';
   } else if (state.phase === 'guessing') {
-    phaseCopy.textContent = 'Press Space or tap Add Block. Press Enter or Check Now when ready.';
+    phaseCopy.textContent =
+      'Press Space or tap Add Block. Press Enter or Check Now when ready.';
   } else if (state.phase === 'revealing') {
     phaseCopy.textContent = 'Counting the blocks back out loud.';
   } else {
-    phaseCopy.textContent = state.result === 'correct' ? 'Exact match.' : 'Not quite. Watch the count.';
+    phaseCopy.textContent =
+      state.result === 'correct'
+        ? 'Exact match.'
+        : 'Not quite. Watch the count.';
   }
 
   if (state.result === 'correct') {
@@ -411,12 +583,23 @@ function drawScene(now) {
   drawGrid(originX, originY, tileWidth, tileHeight);
 
   const visibleBlocks = getVisibleBlocks();
-  const pulseAmount = 1 - Math.min(1, (now - lastPulseAt) / config.revealStepMs);
+  const pulseAmount =
+    1 - Math.min(1, (now - lastPulseAt) / config.revealStepMs);
 
   for (let index = 0; index < visibleBlocks.length; index += 1) {
     const block = visibleBlocks[index];
-    const highlighted = state.phase === 'revealing' && index < state.revealIndex;
-    drawCube(originX, originY, tileWidth, tileHeight, cubeHeight, block, highlighted, pulseAmount);
+    const highlighted =
+      state.phase === 'revealing' && index < state.revealIndex;
+    drawCube(
+      originX,
+      originY,
+      tileWidth,
+      tileHeight,
+      cubeHeight,
+      block,
+      highlighted,
+      pulseAmount,
+    );
   }
 }
 
@@ -458,11 +641,47 @@ function handleControlPress(action) {
   submitCurrentGuess();
 }
 
+function isDarkTheme() {
+  return document.documentElement.classList.contains('dark');
+}
+
+function setTheme(dark) {
+  const html = document.documentElement;
+  html.classList.toggle('dark', dark);
+  const btn = document.querySelector('#theme-toggle');
+  if (btn) {
+    const img = btn.querySelector('img');
+    if (img) {
+      img.src = dark ? sunIconUrl : moonIconUrl;
+    }
+    btn.setAttribute(
+      'aria-label',
+      dark ? 'Switch to light theme' : 'Switch to dark theme',
+    );
+  }
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+}
+
+function initTheme() {
+  const stored = localStorage.getItem('theme');
+  if (stored === 'dark' || stored === 'light') {
+    setTheme(stored === 'dark');
+    return;
+  }
+  setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches);
+}
+
 window.addEventListener('resize', resizeCanvas);
 window.addEventListener('keydown', handleKeyDown);
-incrementButton.addEventListener('click', () => handleControlPress('increment'));
+incrementButton.addEventListener('click', () =>
+  handleControlPress('increment'),
+);
 submitButton.addEventListener('click', () => handleControlPress('submit'));
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  setTheme(!isDarkTheme());
+});
 
+initTheme();
 resizeCanvas();
 startRound();
 animationFrameId = window.requestAnimationFrame(render);
