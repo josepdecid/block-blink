@@ -128,13 +128,6 @@ body {
   line-height: 1.05;
 }
 
-.phase-copy.timer-value {
-  font-variant-numeric: tabular-nums;
-  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-  font-weight: 700;
-  margin: 0.4rem 0 0;
-}
-
 .guess-result {
   position: relative;
   display: inline-block;

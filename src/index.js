@@ -14,7 +14,7 @@ const canvas = document.querySelector('#game-canvas');
 const context = canvas.getContext('2d');
 const heroCount = document.querySelector('#hero-count');
 const roundValue = document.querySelector('#round-value');
-const timerValue = document.querySelector('#timer-value');
+
 const guessNumber = document.querySelector('#guess-number');
 const guessMark = document.querySelector('#guess-mark');
 const actualValue = document.querySelector('#actual-value');
@@ -429,49 +429,33 @@ function getVisibleBlocks() {
   return state.blocks;
 }
 
-function getHeroValue() {
-  if (state.phase === 'showing') {
+function getHeroValue(now) {
+  if (state.phase === 'guessing') {
     return '';
   }
 
-  if (state.phase === 'guessing') {
-    return String(state.guess);
+  if (state.phase === 'showing' || state.phase === 'result') {
+    return `${Math.ceil(Math.max(0, state.phaseEndsAt - now) / 1000)}`;
   }
 
   if (state.phase === 'revealing') {
     return String(state.revealIndex);
   }
 
-  if (state.phase === 'result') {
-    return String(state.blocks.length);
-  }
-
   return '?';
-}
-
-function getTimerLabel(now) {
-  if (
-    state.phase === 'guessing' ||
-    state.phase === 'showing' ||
-    state.phase === 'result'
-  ) {
-    return `${Math.ceil(Math.max(0, state.phaseEndsAt - now) / 1000)}s`;
-  }
-
-  return `${state.revealIndex}/${state.blocks.length}`;
 }
 
 function updateHud() {
   const now = performance.now();
   const guessing = state.phase === 'guessing';
   roundValue.textContent = String(state.round || 1);
-  heroCount.textContent = getHeroValue();
+  heroCount.textContent = getHeroValue(now);
   guessNumber.textContent = String(state.submittedGuess ?? state.guess);
   actualValue.textContent =
     state.phase === 'showing' || state.phase === 'guessing'
       ? '-'
       : String(state.blocks.length);
-  timerValue.textContent = getTimerLabel(now);
+
   resultsPanel.dataset.result = state.result ?? '';
   incrementButton.disabled = !guessing;
   submitButton.disabled = !guessing;
