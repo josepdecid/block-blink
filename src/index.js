@@ -38,6 +38,15 @@ document.querySelector('#root').innerHTML = `
       <p class="results-label">Actual</p>
       <p class="results-value" id="actual-value">-</p>
     </aside>
+
+    <div class="control-bar" aria-label="Game controls">
+      <button class="control-button control-button--primary" id="increment-button" type="button">
+        Add Block
+      </button>
+      <button class="control-button" id="submit-button" type="button">
+        Check Now
+      </button>
+    </div>
   </main>
 `;
 
@@ -51,6 +60,8 @@ const guessNumber = document.querySelector('#guess-number');
 const guessMark = document.querySelector('#guess-mark');
 const actualValue = document.querySelector('#actual-value');
 const resultsPanel = document.querySelector('#results-panel');
+const incrementButton = document.querySelector('#increment-button');
+const submitButton = document.querySelector('#submit-button');
 
 const state = {
   round: 0,
@@ -332,17 +343,20 @@ function getTimerLabel(now) {
 
 function updateHud() {
   const now = performance.now();
+  const guessing = state.phase === 'guessing';
   roundValue.textContent = String(state.round || 1);
   heroCount.textContent = getHeroValue();
   guessNumber.textContent = String(state.submittedGuess ?? state.guess);
   actualValue.textContent = state.phase === 'showing' || state.phase === 'guessing' ? '-' : String(state.blocks.length);
   timerValue.textContent = getTimerLabel(now);
   resultsPanel.dataset.result = state.result ?? '';
+  incrementButton.disabled = !guessing;
+  submitButton.disabled = !guessing;
 
   if (state.phase === 'showing') {
     phaseCopy.textContent = 'Memorize the pattern.';
   } else if (state.phase === 'guessing') {
-    phaseCopy.textContent = 'Use arrow keys, then press Enter when ready.';
+    phaseCopy.textContent = 'Press Space or tap Add Block. Press Enter or Check Now when ready.';
   } else if (state.phase === 'revealing') {
     phaseCopy.textContent = 'Counting the blocks back out loud.';
   } else {
@@ -356,6 +370,24 @@ function updateHud() {
   } else {
     guessMark.textContent = '';
   }
+}
+
+function incrementGuess() {
+  if (state.phase !== 'guessing') {
+    return;
+  }
+
+  state.guess += 1;
+  updateHud();
+}
+
+function submitCurrentGuess() {
+  if (state.phase !== 'guessing') {
+    return;
+  }
+
+  clearTimers();
+  submitGuess();
 }
 
 function resizeCanvas() {
@@ -395,7 +427,7 @@ function render(now) {
 }
 
 function handleKeyDown(event) {
-  if (event.key.startsWith('Arrow') || event.key === 'Enter') {
+  if (event.code === 'Space' || event.key === 'Enter') {
     ensureAudioContext();
   }
 
@@ -403,29 +435,33 @@ function handleKeyDown(event) {
     return;
   }
 
-  if (event.key === 'ArrowUp') {
+  if (event.code === 'Space') {
     event.preventDefault();
-    state.guess += 1;
-    updateHud();
-    return;
-  }
-
-  if (event.key === 'ArrowDown') {
-    event.preventDefault();
-    state.guess = Math.max(0, state.guess - 1);
-    updateHud();
+    incrementGuess();
     return;
   }
 
   if (event.key === 'Enter') {
     event.preventDefault();
-    clearTimers();
-    submitGuess();
+    submitCurrentGuess();
   }
+}
+
+function handleControlPress(action) {
+  ensureAudioContext();
+
+  if (action === 'increment') {
+    incrementGuess();
+    return;
+  }
+
+  submitCurrentGuess();
 }
 
 window.addEventListener('resize', resizeCanvas);
 window.addEventListener('keydown', handleKeyDown);
+incrementButton.addEventListener('click', () => handleControlPress('increment'));
+submitButton.addEventListener('click', () => handleControlPress('submit'));
 
 resizeCanvas();
 startRound();
