@@ -1,26 +1,157 @@
-body {
-  margin: 0;
-  color: #fff;
+:root {
+  color: #111827;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  background-image: linear-gradient(to bottom, #020917, #101725);
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.45), transparent 38%),
+    linear-gradient(180deg, #bfd9ff 0%, #dcebff 100%);
 }
 
-.content {
-  display: flex;
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
   min-height: 100vh;
-  line-height: 1.1;
+}
+
+.game-shell {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.top-copy {
+  position: absolute;
+  top: clamp(1.2rem, 4vw, 2.8rem);
+  left: 50%;
+  z-index: 1;
+  width: min(92vw, 42rem);
   text-align: center;
-  flex-direction: column;
-  justify-content: center;
+  transform: translateX(-50%);
 }
 
-.content h1 {
-  font-size: 3.6rem;
+.prompt {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.phase-copy {
+  margin: 0.65rem 0 0;
+  color: rgba(17, 24, 39, 0.68);
+  font-size: clamp(0.95rem, 1.7vw, 1.15rem);
+}
+
+.play-area {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: 8.5rem 1rem 5.5rem;
+}
+
+.hero-count {
+  min-height: 1em;
+  margin-bottom: clamp(0.8rem, 2vw, 1.6rem);
+  font-size: clamp(4rem, 11vw, 7rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.game-canvas {
+  width: min(90vw, 48rem);
+  height: min(60vh, 28rem);
+  display: block;
+}
+
+.results-panel {
+  position: absolute;
+  right: clamp(0.8rem, 2vw, 1.8rem);
+  bottom: clamp(0.8rem, 2vw, 1.8rem);
+  z-index: 1;
+  min-width: min(15rem, calc(100vw - 1.6rem));
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(84, 110, 146, 0.18);
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.48);
+  box-shadow: 0 18px 44px rgba(76, 98, 132, 0.14);
+  backdrop-filter: blur(18px);
+}
+
+.results-label {
+  margin: 0;
+  color: rgba(17, 24, 39, 0.58);
+  font-size: 0.72rem;
   font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.content p {
-  font-size: 1.2rem;
-  font-weight: 400;
-  opacity: 0.5;
+.results-value {
+  margin: 0.15rem 0 0.7rem;
+  font-size: 1.7rem;
+  font-weight: 750;
+  line-height: 1.05;
+}
+
+.timer-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.guess-result {
+  position: relative;
+  display: inline-block;
+  margin: 0.15rem 0 0.7rem;
+}
+
+.guess-number {
+  display: inline-block;
+  font-size: 3rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.guess-mark {
+  position: absolute;
+  top: 0.08rem;
+  left: 55%;
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 1;
+  transform: rotate(-10deg);
+}
+
+.results-panel[data-result='correct'] .guess-mark {
+  color: #25c544;
+}
+
+.results-panel[data-result='incorrect'] .guess-mark {
+  color: #db2c3b;
+}
+
+@media (max-width: 640px) {
+  .play-area {
+    padding-top: 7.5rem;
+    padding-bottom: 12rem;
+  }
+
+  .game-canvas {
+    width: 100%;
+    height: 22rem;
+  }
+
+  .results-panel {
+    left: 0.8rem;
+    right: 0.8rem;
+    min-width: 0;
+  }
 }
