@@ -2,7 +2,6 @@ import './index.css';
 
 const config = {
   gridSize: 7,
-  guessDurationMs: 10_000,
   showDurationMs: 2_600,
   revealStepMs: 550,
   resultDurationMs: 1_900,
@@ -111,9 +110,7 @@ function startRound() {
 
 function beginGuessing() {
   state.phase = 'guessing';
-  state.phaseEndsAt = performance.now() + config.guessDurationMs;
   updateHud();
-  schedule(submitGuess, config.guessDurationMs);
 }
 
 function submitGuess() {
