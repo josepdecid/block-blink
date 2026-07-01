@@ -48,16 +48,6 @@
   color: #db2c3b;
 }
 
-.control-bar {
-  position: fixed;
-  left: 50%;
-  bottom: clamp(0.8rem, 2vw, 1.5rem);
-  z-index: 2;
-  display: flex;
-  gap: 0.8rem;
-  transform: translateX(-50%);
-}
-
 .control-button {
   appearance: none;
   border: 1px solid rgba(0, 0, 0, 0.08);

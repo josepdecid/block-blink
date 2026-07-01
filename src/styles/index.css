@@ -74,12 +74,6 @@ body {
   letter-spacing: -0.03em;
 }
 
-.phase-copy {
-  margin: 0.65rem 0 0;
-  color: rgba(17, 24, 39, 0.68);
-  font-size: clamp(0.95rem, 1.7vw, 1.15rem);
-}
-
 .play-area {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -145,10 +139,6 @@ body {
     radial-gradient(circle at top, rgba(15, 23, 42, 0.6), transparent 38%),
     linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
   color: #e2e8f0;
-}
-
-.dark .phase-copy {
-  color: rgba(226, 232, 240, 0.62);
 }
 
 .dark .theme-toggle,
