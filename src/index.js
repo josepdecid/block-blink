@@ -1,5 +1,5 @@
 import './index.css';
-import { icons } from './icons.js';
+import { iconSrc } from './icons.js';
 
 const config = {
   gridSize: 5,
@@ -572,16 +572,23 @@ function isDarkTheme() {
 function setTheme(dark) {
   const html = document.documentElement;
   html.classList.toggle('dark', dark);
-  const btn = document.querySelector('#theme-toggle');
-  if (btn) {
-    const img = btn.querySelector('img');
+  const themeBtn = document.querySelector('#theme-toggle');
+  if (themeBtn) {
+    const img = themeBtn.querySelector('img');
     if (img) {
-      img.src = dark ? icons.sun : icons.moon;
+      img.src = iconSrc(dark ? 'sun' : 'moon', dark);
     }
-    btn.setAttribute(
+    themeBtn.setAttribute(
       'aria-label',
       dark ? 'Switch to light theme' : 'Switch to dark theme',
     );
+  }
+  const soundBtn = document.querySelector('#sound-toggle');
+  if (soundBtn) {
+    const img = soundBtn.querySelector('img');
+    if (img) {
+      img.src = iconSrc(isMuted ? 'muted' : 'volume', dark);
+    }
   }
   localStorage.setItem('theme', dark ? 'dark' : 'light');
 }
@@ -601,7 +608,7 @@ function setMuted(muted) {
   if (btn) {
     const img = btn.querySelector('img');
     if (img) {
-      img.src = muted ? icons.muted : icons.volume;
+      img.src = iconSrc(muted ? 'muted' : 'volume', isDarkTheme());
     }
     btn.setAttribute('aria-label', muted ? 'Unmute sound' : 'Mute sound');
   }
