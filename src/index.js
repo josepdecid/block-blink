@@ -646,6 +646,11 @@ function setTheme(dark) {
       dark ? 'Switch to light theme' : 'Switch to dark theme',
     );
   }
+  updateSettingsIcons(dark);
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+}
+
+function updateSettingsIcons(dark = isDarkTheme()) {
   const soundBtn = document.querySelector('#sound-toggle');
   if (soundBtn) {
     const img = soundBtn.querySelector('img');
@@ -653,7 +658,13 @@ function setTheme(dark) {
       img.src = iconSrc(isMuted ? 'muted' : 'volume', dark);
     }
   }
-  localStorage.setItem('theme', dark ? 'dark' : 'light');
+  const layoutBtn = document.querySelector('#layout-toggle');
+  if (layoutBtn) {
+    const img = layoutBtn.querySelector('img');
+    if (img) {
+      img.src = iconSrc('flip', dark);
+    }
+  }
 }
 
 function initTheme() {
@@ -678,6 +689,22 @@ function setMuted(muted) {
   localStorage.setItem('sound', muted ? 'off' : 'on');
 }
 
+function setLayoutFlipped(flipped) {
+  document.documentElement.classList.toggle('layout-flipped', flipped);
+  const btn = document.querySelector('#layout-toggle');
+  if (btn) {
+    btn.setAttribute(
+      'aria-label',
+      flipped ? 'Move controls to the right' : 'Move controls to the left',
+    );
+  }
+  localStorage.setItem('layout', flipped ? 'flipped' : 'default');
+}
+
+function initLayout() {
+  setLayoutFlipped(localStorage.getItem('layout') === 'flipped');
+}
+
 function initMute() {
   const stored = localStorage.getItem('sound');
   setMuted(stored === 'off');
@@ -697,8 +724,16 @@ document.querySelector('#sound-toggle').addEventListener('click', () => {
   setMuted(!isMuted);
 });
 
+document.querySelector('#layout-toggle').addEventListener('click', () => {
+  setLayoutFlipped(
+    !document.documentElement.classList.contains('layout-flipped'),
+  );
+});
+
 initTheme();
 initMute();
+initLayout();
+updateSettingsIcons();
 resizeCanvas();
 startRound();
 animationFrameId = window.requestAnimationFrame(render);

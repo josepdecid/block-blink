@@ -123,8 +123,14 @@ body {
   gap: 0.5rem;
 }
 
+html.layout-flipped .top-buttons {
+  left: auto;
+  right: clamp(0.8rem, 2vw, 1.8rem);
+}
+
 .theme-toggle,
-.sound-toggle {
+.sound-toggle,
+.layout-toggle {
   display: grid;
   place-items: center;
   width: 2.4rem;
@@ -141,7 +147,8 @@ body {
 }
 
 .theme-toggle:hover,
-.sound-toggle:hover {
+.sound-toggle:hover,
+.layout-toggle:hover {
   background: rgba(0, 0, 0, 0.06);
 }
 
@@ -155,13 +162,15 @@ body {
 }
 
 .dark .theme-toggle,
-.dark .sound-toggle {
+.dark .sound-toggle,
+.dark .layout-toggle {
   background: transparent;
   color: #fff;
 }
 
 .dark .theme-toggle:hover,
-.dark .sound-toggle:hover {
+.dark .sound-toggle:hover,
+.dark .layout-toggle:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
