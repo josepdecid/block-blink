@@ -426,12 +426,16 @@ function getHeroValue(now) {
     return '';
   }
 
-  if (state.phase === 'showing' || state.phase === 'result') {
+  if (state.phase === 'showing') {
     return `${Math.ceil(Math.max(0, state.phaseEndsAt - now) / 1000)}`;
   }
 
   if (state.phase === 'revealing') {
     return String(state.revealIndex);
+  }
+
+  if (state.phase === 'result') {
+    return String(state.blocks.length);
   }
 
   return '?';
