@@ -1,5 +1,7 @@
 .results-panel {
   position: relative;
+  grid-row: 3;
+  z-index: 1;
   justify-self: end;
   margin: 0 clamp(0.8rem, 2vw, 1.8rem) clamp(0.8rem, 2vw, 1.8rem);
 }
