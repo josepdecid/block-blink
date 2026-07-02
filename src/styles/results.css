@@ -32,21 +32,11 @@
   line-height: 1;
 }
 
-.guess-mark {
-  position: absolute;
-  top: 0.08rem;
-  left: 55%;
-  font-size: 2.8rem;
-  font-weight: 900;
-  line-height: 1;
-  transform: rotate(-10deg);
-}
-
-#results-panel[data-result="correct"] .guess-mark {
+#results-panel[data-result="correct"] .guess-number {
   color: #25c544;
 }
 
-#results-panel[data-result="incorrect"] .guess-mark {
+#results-panel[data-result="incorrect"] .guess-number {
   color: #db2c3b;
 }
 

@@ -96,6 +96,14 @@ body {
   pointer-events: auto;
 }
 
+#hero-count[data-result="correct"] {
+  color: #25c544;
+}
+
+#hero-count[data-result="incorrect"] {
+  color: #db2c3b;
+}
+
 .game-canvas {
   position: absolute;
   inset: 0;

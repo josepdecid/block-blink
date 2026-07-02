@@ -16,7 +16,6 @@ const context = canvas.getContext('2d');
 const heroCount = document.querySelector('#hero-count');
 
 const guessNumber = document.querySelector('#guess-number');
-const guessMark = document.querySelector('#guess-mark');
 const resultsPanel = document.querySelector('#results-panel');
 const incrementButton = document.querySelector('#increment-button');
 const submitButton = document.querySelector('#submit-button');
@@ -216,6 +215,104 @@ function pulseLightness(base, pulseAmount) {
   return Math.round(base + pulseAmount * 8);
 }
 
+function getNeutralCubePalette() {
+  return isDarkTheme()
+    ? {
+        top: '#f8fafc',
+        left: '#e2e8f0',
+        right: '#cbd5e1',
+        stroke: '#94a3b8',
+      }
+    : {
+        top: '#ffffff',
+        left: '#f3f4f6',
+        right: '#e5e7eb',
+        stroke: '#9ca3af',
+      };
+}
+
+function getHighlightedCubePalette(tone, pulseAmount) {
+  if (tone === 'red') {
+    return isDarkTheme()
+      ? {
+          top: `hsl(0 79% ${pulseLightness(73, pulseAmount)}%)`,
+          left: `hsl(355 69% ${pulseLightness(58, pulseAmount)}%)`,
+          right: `hsl(350 72% ${pulseLightness(45, pulseAmount)}%)`,
+          stroke: '#ef4444',
+        }
+      : {
+          top: `hsl(0 100% ${pulseLightness(74, pulseAmount)}%)`,
+          left: `hsl(355 66% ${pulseLightness(54, pulseAmount)}%)`,
+          right: `hsl(350 63% ${pulseLightness(44, pulseAmount)}%)`,
+          stroke: '#db2c3b',
+        };
+  }
+
+  return isDarkTheme()
+    ? {
+        top: `hsl(138 79% ${pulseLightness(73, pulseAmount)}%)`,
+        left: `hsl(137 69% ${pulseLightness(58, pulseAmount)}%)`,
+        right: `hsl(142 72% ${pulseLightness(45, pulseAmount)}%)`,
+        stroke: '#22c55e',
+      }
+    : {
+        top: `hsl(120 100% ${pulseLightness(74, pulseAmount)}%)`,
+        left: `hsl(124 66% ${pulseLightness(54, pulseAmount)}%)`,
+        right: `hsl(125 63% ${pulseLightness(44, pulseAmount)}%)`,
+        stroke: '#18882c',
+      };
+}
+
+function isRevealKnownWrong() {
+  if (state.phase !== 'revealing') {
+    return false;
+  }
+
+  const { revealIndex, submittedGuess, blocks } = state;
+  if (revealIndex > submittedGuess) {
+    return true;
+  }
+
+  return revealIndex >= blocks.length && submittedGuess !== blocks.length;
+}
+
+function getBlockHighlightTone(index) {
+  if (state.phase !== 'revealing' && state.phase !== 'result') {
+    return null;
+  }
+
+  if (index >= state.revealIndex) {
+    return null;
+  }
+
+  const guess = state.submittedGuess;
+  const isWrong =
+    state.result === 'incorrect' ||
+    (state.phase === 'revealing' && isRevealKnownWrong());
+
+  if (index >= guess) {
+    return 'red';
+  }
+
+  if (isWrong && guess > state.blocks.length) {
+    return 'red';
+  }
+
+  return 'green';
+}
+
+function getDisplayResult() {
+  if (state.result) {
+    return state.result;
+  }
+
+  if (state.phase === 'revealing' && isRevealKnownWrong()) {
+    return 'incorrect';
+  }
+
+  return null;
+}
+
 function drawGrid(originX, originY, tileWidth, tileHeight) {
   context.save();
   context.lineWidth = 1;
@@ -286,7 +383,7 @@ function drawCube(
   tileHeight,
   cubeHeight,
   block,
-  highlighted,
+  highlightTone,
   pulseAmount,
 ) {
   const topNorth = projectPoint(
@@ -361,33 +458,9 @@ function drawCube(
     0,
   );
 
-  const palette = isDarkTheme()
-    ? highlighted
-      ? {
-          top: `hsl(138 79% ${pulseLightness(73, pulseAmount)}%)`,
-          left: `hsl(137 69% ${pulseLightness(58, pulseAmount)}%)`,
-          right: `hsl(142 72% ${pulseLightness(45, pulseAmount)}%)`,
-          stroke: '#22c55e',
-        }
-      : {
-          top: '#f8fafc',
-          left: '#e2e8f0',
-          right: '#cbd5e1',
-          stroke: '#94a3b8',
-        }
-    : highlighted
-      ? {
-          top: `hsl(120 100% ${pulseLightness(74, pulseAmount)}%)`,
-          left: `hsl(124 66% ${pulseLightness(54, pulseAmount)}%)`,
-          right: `hsl(125 63% ${pulseLightness(44, pulseAmount)}%)`,
-          stroke: '#18882c',
-        }
-      : {
-          top: '#ffffff',
-          left: '#f3f4f6',
-          right: '#e5e7eb',
-          stroke: '#9ca3af',
-        };
+  const palette = highlightTone
+    ? getHighlightedCubePalette(highlightTone, pulseAmount)
+    : getNeutralCubePalette();
 
   drawPath([topNorth, topEast, topSouth, topWest]);
   context.fillStyle = palette.top;
@@ -447,17 +520,11 @@ function updateHud() {
   heroCount.textContent = getHeroValue(now);
   guessNumber.textContent = String(state.submittedGuess ?? state.guess);
 
-  resultsPanel.dataset.result = state.result ?? '';
+  const displayResult = getDisplayResult();
+  resultsPanel.dataset.result = displayResult ?? '';
+  heroCount.dataset.result = displayResult ?? '';
   incrementButton.disabled = !guessing;
   submitButton.disabled = !guessing;
-
-  if (state.result === 'correct') {
-    guessMark.textContent = '✓';
-  } else if (state.result === 'incorrect') {
-    guessMark.textContent = '✕';
-  } else {
-    guessMark.textContent = '';
-  }
 }
 
 function incrementGuess() {
@@ -509,9 +576,7 @@ function drawScene(now) {
 
   for (let index = 0; index < visibleBlocks.length; index += 1) {
     const block = visibleBlocks[index];
-    const highlighted =
-      (state.phase === 'revealing' || state.phase === 'result') &&
-      index < state.revealIndex;
+    const highlightTone = getBlockHighlightTone(index);
     drawCube(
       originX,
       originY,
@@ -519,7 +584,7 @@ function drawScene(now) {
       tileHeight,
       cubeHeight,
       block,
-      highlighted,
+      highlightTone,
       pulseAmount,
     );
   }
