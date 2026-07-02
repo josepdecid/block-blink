@@ -80,14 +80,16 @@
   color: #052e14;
 }
 
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
 @media (max-width: 640px) {
   #results-panel {
     justify-self: stretch;
     min-width: 0;
     margin: 0 0.8rem 0.8rem;
-  }
-
-  .control-button {
-    flex: 1;
   }
 }

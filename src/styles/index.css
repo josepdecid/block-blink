@@ -115,9 +115,8 @@ body {
 
 .top-buttons {
   position: fixed;
-  grid-row: 1;
-  top: clamp(1.5rem, 5vw, 3.5rem);
-  right: clamp(1.5rem, 5vw, 3.5rem);
+  bottom: clamp(0.8rem, 2vw, 1.8rem);
+  left: clamp(0.8rem, 2vw, 1.8rem);
   z-index: 10;
   display: flex;
   flex-direction: column;
